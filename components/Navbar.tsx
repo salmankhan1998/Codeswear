@@ -4,7 +4,15 @@ import ArrowDown from "../public/icons/ArrowDown";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import ShoppingCart from "./ShoppingCart";
 
-const Navbar = () => {
+interface NavbarProps  {
+  cart: Object,
+  subTotal: Number,
+  addToCart: Function,
+  removeFromCart: Function,
+  clearCart: Function
+};
+
+const Navbar = ({cart, subTotal, addToCart, removeFromCart, clearCart}: NavbarProps) => {
   const [showCart, setShowCart] = useState(false);
   const ref = useRef();
   return (
@@ -50,7 +58,7 @@ const Navbar = () => {
           </div>
         </nav>
       </div>
-      { showCart && <ShoppingCart ref={ref} showCart={showCart} setShowCart={setShowCart}/>}
+      { showCart &&  <ShoppingCart cart={cart} subTotal={subTotal} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart}  showCart={showCart} setShowCart={setShowCart}/>}
     </header>
   );
 };

@@ -3,12 +3,39 @@ import { useRouter } from "next/router";
 import { HiStar } from "react-icons/hi";
 import { BsSuitHeart } from "react-icons/bs";
 
-const Images = ['/images/shirts/image1.jpeg', '/images/shirts/image2.jpeg', '/images/shirts/image3.jpeg','/images/shirts/image4.jpeg']
+const Images = [
+  "/images/shirts/image1.jpeg",
+  "/images/shirts/image2.jpeg",
+  "/images/shirts/image3.jpeg",
+  "/images/shirts/image4.jpeg",
+];
 
-const Slug = () => {
-    const [src, setSrc] = useState('');
+const Slug = ( {addToCart}: any) => {
+  const [src, setSrc] = useState("");
+  const [pin, setPin] = useState();
+  const [service, setService] = useState();
   const router = useRouter();
   const { slug } = router.query;
+
+  const checkServiceability = async () => {
+    const res = await fetch("http://localhost:3000/api/pincode");
+    const pinData = await res.json();
+    pinData && console.log("pin codes",pinData);
+      // @ts-ignore
+    if (pinData.pinCodes.includes(parseInt(pin))) {
+      // @ts-ignore
+      setService(true);
+    }
+    else{
+      // @ts-ignore
+      setService(false);
+    }
+  };
+
+  const handleChange = (e : Event)=>{
+      // @ts-ignore
+    setPin(e.target.value);
+  }
 
   return (
     <section className="text-gray-600 body-font overflow-hidden">
@@ -16,62 +43,40 @@ const Slug = () => {
         <div className="lg:w-4/5 mx-auto flex flex-wrap">
           <div className="flex">
             <div className="flex flex-col w-16">
-                {
-                Images.map((imgSrc, index)=>(
-                    <img key={index} src={imgSrc} alt="" className="w-full h-16" onClick={()=>{setSrc(imgSrc)}}/>
-                ))
-                }
+              {Images.map((imgSrc, index) => (
+                <img
+                  key={index}
+                  src={imgSrc}
+                  alt=""
+                  className="w-full h-16"
+                  onClick={() => {
+                    setSrc(imgSrc);
+                  }}
+                />
+              ))}
             </div>
             <img
-                alt="ecommerce"
-                className="w-96 lg:h-auto h-64 object-cover object-center rounded flex-shrink-0"
-                src={src ? src : Images[0]}
+              alt="ecommerce"
+              className="w-96 lg:h-auto h-64 object-cover object-center rounded flex-shrink-0"
+              src={src ? src : Images[0]}
             />
           </div>
           <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-            <h2 className="text-sm title-font text-gray-500 tracking-widest">
-              BRAND NAME
+            <h2 className="text-sm title-font text-gray-500 tracking-widest uppercase">
+              codeswear
             </h2>
             <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">
-              The Catcher in the Rye
+              Wear the code (XL/Blue)
             </h1>
             <div className="flex mb-4">
               <span className="flex items-center">
                 <HiStar className="w-4 h-4 text-pink-500" />
-                {/* <svg
-                  fill="currentColor"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  className="w-4 h-4 text-pink-500"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                </svg> */}
                 <HiStar className="w-4 h-4 text-pink-500" />
                 <HiStar className="w-4 h-4 text-pink-500" />
                 <HiStar className="w-4 h-4 text-pink-500" />
                 <HiStar className="w-4 h-4" />
                 <span className="text-gray-600 ml-3">4 Reviews</span>
               </span>
-              {/* <span className="flex ml-3 pl-3 py-2 border-l-2 border-gray-200 space-x-2s">
-                  <a className="text-gray-500">
-                    <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-5 h-5" viewBox="0 0 24 24">
-                      <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
-                    </svg>
-                  </a>
-                  <a className="text-gray-500">
-                    <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-5 h-5" viewBox="0 0 24 24">
-                      <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
-                    </svg>
-                  </a>
-                  <a className="text-gray-500">
-                    <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-5 h-5" viewBox="0 0 24 24">
-                      <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-                    </svg>
-                  </a>
-                </span> */}
             </div>
             <p className="leading-relaxed">
               Fam locavore kickstarter distillery. Mixtape chillwave tumeric
@@ -102,9 +107,9 @@ const Slug = () => {
                     <svg
                       fill="none"
                       stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       className="w-4 h-4"
                       viewBox="0 0 24 24"
                     >
@@ -116,15 +121,44 @@ const Slug = () => {
             </div>
             <div className="flex space-x-2 justify-between">
               <span className="title-font font-medium text-2xl text-gray-900">
-                $58.00
+                ₹599
               </span>
               <div className="flex items-center space-x-4">
                 <button className="flex ml-auto text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded">
+                  Buy Now
+                </button>
+                <button onClick={()=>{addToCart(slug, 1, 599,'Wear the code (XL/Blue)', 'XL',"Red")}} className="flex ml-auto text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded">
                   Add to Cart
                 </button>
                 <BsSuitHeart className="text-3xl text-pink-500" />
               </div>
             </div>
+            <div className="relative flex space-x-8 mt-5">
+              <input
+                type="text"
+                id="pin"
+                name="pin"
+                value={pin || ''}
+                placeholder="Enter pin code for serviceability"
+                // @ts-ignore
+                onChange={(e: Event)=>{handleChange(e)}}
+                className="max-w-[310px] w-full bg-white rounded border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+              />
+              <button
+                onClick={checkServiceability}
+      // @ts-ignore
+                disabled={!pin}
+                className="text-white bg-pink-500 border-0 py-2 px-8 focus:outline-none hover:bg-pink-600 rounded textLg disabled:cursor-not-allowed"
+              >
+                Check
+              </button>
+            </div>
+            {(service && service != null) && <div className='text-green-600 mt-4' >
+              Yes! We can deliver the order to this location.
+            </div>}
+            {(!service && service != null) && <div className='text-red-600 mt-4' >
+              Sorry! Our service is not available on this location.
+            </div>}
           </div>
         </div>
       </div>
