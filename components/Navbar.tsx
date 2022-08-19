@@ -51,9 +51,11 @@ const Navbar = ({cart, subTotal, addToCart, removeFromCart, clearCart}: NavbarPr
             </a>
           </Link>
           <div className="flex items-center space-x-4">
-            <a className="text-sm text-white px-2 py-1 w-max h-8 rounded-md bg-pink-500 cursor-pointer border  hover:bg-white hover:text-pink-500 hover:border border-pink-500 transition duration-300">
-              Login
-            </a>
+            <Link href={'/login'}>
+              <a className="text-sm text-white px-2 py-1 w-max h-8 rounded-md bg-pink-500 cursor-pointer border  hover:bg-white hover:text-pink-500 hover:border border-pink-500 transition duration-300">
+                Login
+              </a>
+            </Link>
             <AiOutlineShoppingCart onClick={()=>{setShowCart(!showCart)}} className="border hover:bg-gray-100 border-gray-300 text-pink-500 rounded-lg p-1 h-8 w-8 cursor-pointer" />
           </div>
         </nav>
