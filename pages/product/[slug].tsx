@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { HiStar } from "react-icons/hi";
 import { BsSuitHeart } from "react-icons/bs";
@@ -19,6 +19,7 @@ const Slug = ( {addToCart}: any) => {
 
   const checkServiceability = async () => {
     const res = await fetch("http://localhost:3000/api/pincode");
+    
     const pinData = await res.json();
     pinData && console.log("pin codes",pinData);
       // @ts-ignore
@@ -31,6 +32,16 @@ const Slug = ( {addToCart}: any) => {
       setService(false);
     }
   };
+
+  useEffect(() => {
+     async function run() {
+      const res = await fetch("http://localhost:3000/api/pincode");
+      console.log('res: ', res);
+    }
+
+    run()
+    
+  },[])
 
   const handleChange = (e : Event)=>{
       // @ts-ignore
