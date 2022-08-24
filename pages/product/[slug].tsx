@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { MongoClient } from "mongodb";
+import Product from "../../models/Product";
+
 import { HiStar } from "react-icons/hi";
 import { BsSuitHeart } from "react-icons/bs";
+
+const mongoose = require("mongoose");
+const uri="mongodb+srv://salmankhan:salmankhan1998@cluster0.95nnhdx.mongodb.net/?retryWrites=true&w=majority";
 
 const Images = [
   "/images/shirts/image1.jpeg",
@@ -10,7 +16,10 @@ const Images = [
   "/images/shirts/image4.jpeg",
 ];
 
-const Slug = ( {addToCart}: any) => {
+const Slug = ({ addToCart, product, colorSizeSlug}: any) => {
+  console.log("product of slug",product);
+  console.log("variants of slug",colorSizeSlug);
+  
   const [src, setSrc] = useState("");
   const [pin, setPin] = useState();
   const [service, setService] = useState();
@@ -21,7 +30,7 @@ const Slug = ( {addToCart}: any) => {
     const res = await fetch("http://localhost:3000/api/pincode");
     
     const pinData = await res.json();
-    pinData && console.log("pin codes",pinData);
+    // pinData && console.log("pin codes",pinData);
       // @ts-ignore
     if (pinData.pinCodes.includes(parseInt(pin))) {
       // @ts-ignore
@@ -36,7 +45,7 @@ const Slug = ( {addToCart}: any) => {
   useEffect(() => {
      async function run() {
       const res = await fetch("http://localhost:3000/api/pincode");
-      console.log('res: ', res);
+      // console.log('res: ', res);
     }
 
     run()
@@ -176,5 +185,36 @@ const Slug = ( {addToCart}: any) => {
     </section>
   );
 };
+
+export async function getServerSideProps(context: any) {
+  const db = mongoose.connect(uri);
+  mongoose.Promise = global.Promise;
+  mongoose.connection.once("open", () => {
+    console.log(" 🍃 connected to mongoDB mLab");
+  });
+
+  let product = await Product.findOne({ slug: context.query.slug })
+  let variants = await Product.find({ title: product?.title })
+  let colorSizeSlug = {};
+
+  for( let item of variants)
+  { //{red: { size: { slug: "slug-name"}}}
+    // @ts-ignore
+    if(Object.keys(colorSizeSlug).includes(item.color)){
+      // @ts-ignore
+      colorSizeSlug[item.color][item?.size] = {slug: item?.slug}
+    }
+    else{
+      // @ts-ignore
+      colorSizeSlug[item.color] = {};
+      // @ts-ignore
+      colorSizeSlug[item.color][item?.size] = {slug: item?.slug}
+    }
+  }
+
+  return {
+    props: {product: JSON.parse(JSON.stringify(product)), colorSizeSlug: JSON.parse(JSON.stringify(colorSizeSlug))}, // will be passed to the page component as props
+  };
+}
 
 export default Slug;

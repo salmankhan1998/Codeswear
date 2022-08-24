@@ -10,7 +10,7 @@ interface InputProps {
 
 const Input: React.FC<InputProps> = ({ label, type, id, placeholder, handleChange}) => {
   return (
-    <div className="w-1/2 mb-4">
+    <div className=" mb-4">
       <label htmlFor={id} className="leading-7 text-sm text-gray-600">
         {label}
       </label>
