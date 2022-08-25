@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { MongoClient } from "mongodb";
 import Product from "../../models/Product";
-// import "./index.css";
 import { HiStar } from "react-icons/hi";
 import { BsSuitHeart } from "react-icons/bs";
 
@@ -22,24 +21,23 @@ const Slug = ({ addToCart, product, variants }: any) => {
   console.log("variants of slug", variants);
 
 
-  const [currentSize, setCurrentSize]= useState('')
+  // const [currentSize, setCurrentSize]= useState('')
   const [service, setService] = useState();
   const [src, setSrc] = useState("");
   const [pin, setPin] = useState();
   const router = useRouter();
   const { slug } = router.query;
-  const sizes: Array<string> = [];
+  const [sizes, setSizes]= useState(['S']);
   const colors: Array<string> = []
 
   for( let color of Object.keys(variants)){
-    // console.log("colors",color);
     colors.push(color);
   }
-  for (let item of Object.keys(variants)) {
-    Object.keys(variants[item]).map((val) => {
-      sizes.push(val);
-    });
-  }
+  // for (let item of Object.keys(variants)) {
+  //   Object.keys(variants[item]).map((val) => {
+  //     sizes.push(val);
+  //   });
+  // }
 
   const checkServiceability = async () => {
     const res = await fetch("http://localhost:3000/api/pincode");
@@ -57,7 +55,17 @@ const Slug = ({ addToCart, product, variants }: any) => {
   };
 
   const changeVariant = (color: string, size: string)=>{
-    console.log("color",color, "size",size)
+    console.log("color",color, "check",Object.keys(variants).includes(color))
+    if(Object.keys(variants).includes(color)){
+      let temp = []
+      for(let item of Object.keys(variants[color])){
+        temp.push(item)
+      }
+      if(temp.length > 0 ){
+        // @ts-ignore
+        setSizes(temp)
+      }
+    }
   }
 
   useEffect(() => {
@@ -102,7 +110,7 @@ const Slug = ({ addToCart, product, variants }: any) => {
               codeswear
             </h2>
             <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">
-              Wear the code (XL/Blue)
+              {product.title} (XL/Blue)
             </h1>
             <div className="flex mb-4">
               <span className="flex items-center">
@@ -115,12 +123,7 @@ const Slug = ({ addToCart, product, variants }: any) => {
               </span>
             </div>
             <p className="leading-relaxed">
-              Fam locavore kickstarter distillery. Mixtape chillwave tumeric
-              sriracha taximy chia microdosing tilde DIY. XOXO fam indxgo
-              juiceramps cornhole raw denim forage brooklyn. Everyday carry +1
-              seitan poutine tumeric. Gastropub blue bottle austin listicle
-              pour-over, neutra jean shorts keytar banjo tattooed umami
-              cardigan.
+             {product.description}
             </p>
             <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
               <div className="flex">
@@ -129,7 +132,7 @@ const Slug = ({ addToCart, product, variants }: any) => {
                   return (
                     <button
                       key={index}
-                      onClick={()=>{changeVariant(color, currentSize)}}
+                      onClick={()=>{changeVariant(color,"S")}}
                       className={`border-2 ${color} ${color == "red" && "border border-gray-600"} rounded-full w-6 h-6 focus:outline-none`}
                     ></button>
                   );
@@ -138,7 +141,7 @@ const Slug = ({ addToCart, product, variants }: any) => {
               <div className="flex ml-6 items-center">
                 <span className="mr-3">Size</span>
                 <div className="relative">
-                  <select onChange={(e)=>{setCurrentSize(e.target.value); changeVariant("red", e.target.value)}} value={currentSize} className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-base pl-3 pr-10">
+                  <select onChange={(e)=>{}} className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-base pl-3 pr-10">
                     {sizes.map((size,index) => {
                       return <option key={index}>{size}</option>;
                     })}
@@ -161,7 +164,7 @@ const Slug = ({ addToCart, product, variants }: any) => {
             </div>
             <div className="flex space-x-2 justify-between">
               <span className="title-font font-medium text-2xl text-gray-900">
-                ₹599
+                ₹ {product.price}
               </span>
               <div className="flex items-center space-x-4">
                 <button className="flex ml-auto text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded">
