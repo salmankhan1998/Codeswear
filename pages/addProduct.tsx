@@ -13,14 +13,14 @@ const AddProduct = () => {
   };
 
   const handleImage = (e: any, name: string) => {
-    console.log("file : ",e.target.value);
+    console.log("file : ", e.target.value);
     let file = e.target.files[0];
-    console.log("file : ",file);
-    if(file){
-        // @ts-ignore
-        setProduct({ ...product, [name]: URL.createObjectURL(file) });
-        // @ts-ignore
-        setLogo(URL.createObjectURL(file));
+    console.log("file : ", file);
+    if (file) {
+      // @ts-ignore
+      setProduct({ ...product, [name]: URL.createObjectURL(file) });
+      // @ts-ignore
+      setLogo(URL.createObjectURL(file));
     }
   };
 
@@ -42,7 +42,9 @@ const AddProduct = () => {
 
   return (
     <div className="w-2/5 mx-auto">
-      <h2 className="text-3xl text-pink-500 font-medium text-center my-10">Add New Product</h2>
+      <h2 className="text-2xl lg:text-3xl font-semibold text-center capitalize my-10">
+        Add New Product
+      </h2>
       <form action="">
         <Input
           label="Poduct Title"
@@ -72,8 +74,6 @@ const AddProduct = () => {
           }}
         />
 
-  
-        
         {/* .icon-img{
             position: absolute;
             width: 30px;
@@ -90,13 +90,19 @@ const AddProduct = () => {
             <img
               src={logo ? logo : "/icons/upload-icon.png"}
               alt="logo"
-              className={`absolute mx-auto ${logo ? "w-full h-full absolute object-contain" : " h-[100px] w-[100px] object-contain transform top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]"}`}
+              className={`absolute mx-auto ${
+                logo
+                  ? "w-full h-full absolute object-contain"
+                  : " h-[100px] w-[100px] object-contain transform top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]"
+              }`}
             />
             <input
               type="file"
               accept="image/*"
               className="opacity-0 w-full h-full cursor-pointer"
-              onChange={(e)=>{handleImage(e, "image")}}
+              onChange={(e) => {
+                handleImage(e, "image");
+              }}
             />
           </div>
         </div>
@@ -180,17 +186,18 @@ const AddProduct = () => {
             handleChange(e, "availableQty");
           }}
         />
-
-        <button
-          className="inline-block w-max px-6 py-2.5 text-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-pink-500 hover:shadow-lg hover:text-white focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out mb-3 border border-pink-500"
-          type="button"
-          data-mdb-ripple="true"
-          data-mdb-ripple-color="light"
-          onClick={AddProduct}
-          // style="background: linear-gradient(to right,#ee7724,#d8363a,#dd3675,#b44593);"
-        >
-          Add Product
-        </button>
+        <div className="flex justify-end">
+          <button
+            className="inline-block w-max mt-5 px-6 py-2.5 text-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-pink-500 hover:shadow-lg hover:text-white focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out mb-3 border border-pink-500"
+            type="button"
+            data-mdb-ripple="true"
+            data-mdb-ripple-color="light"
+            onClick={AddProduct}
+            // style="background: linear-gradient(to right,#ee7724,#d8363a,#dd3675,#b44593);"
+          >
+            Add Product
+          </button>
+        </div>
       </form>
     </div>
   );

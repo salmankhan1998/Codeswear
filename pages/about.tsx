@@ -1,4 +1,5 @@
 import React from 'react'
+import { arrayBuffer } from 'stream/consumers'
 
 const About = () => {
   return (

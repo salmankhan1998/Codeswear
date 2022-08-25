@@ -31,6 +31,7 @@ const Checkout = ({
       </h2>
       <div className="px-5">
         <div className="flex space-x-5 w-full">
+          <div className="w-1/2">
           <Input
             label="Name"
             type="text"
@@ -41,6 +42,8 @@ const Checkout = ({
               console.log(e.target.value);
             }}
           />
+          </div>
+          <div className="w-1/2">
           <Input
             label="Email"
             type="email"
@@ -51,6 +54,7 @@ const Checkout = ({
               console.log(e.target.value);
             }}
           />
+          </div>
         </div>
 
         <div className="relative mb-4">
@@ -69,6 +73,7 @@ const Checkout = ({
           ></textarea>
         </div>
         <div className="flex space-x-5 w-full">
+        <div className="w-1/2">
           <Input
             label="Phone Number"
             type="text"
@@ -79,6 +84,8 @@ const Checkout = ({
               console.log(e.target.value);
             }}
           />
+          </div>
+          <div className="w-1/2">
           <Input
             label="Pin (Shipping only accross Pakistan)"
             type="text"
@@ -89,8 +96,10 @@ const Checkout = ({
               console.log(e.target.value);
             }}
           />
+          </div>
         </div>
         <div className="flex space-x-5 w-full">
+        <div className="w-1/2">
           <Input
             label="State"
             type="text"
@@ -101,6 +110,8 @@ const Checkout = ({
               console.log(e.target.value);
             }}
           />
+          </div>
+          <div className="w-1/2">
           <Input
             label="District"
             type="text"
@@ -111,6 +122,7 @@ const Checkout = ({
               console.log(e.target.value);
             }}
           />
+          </div>
         </div>
       </div>
       <h2 className="text-lg lg:text-xl font-semibold capitalize mt-5 mb-2">

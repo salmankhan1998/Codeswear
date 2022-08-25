@@ -1,0 +1,23 @@
+.red{
+    @apply bg-red-600
+}
+
+.blue{
+    @apply bg-blue-600
+}
+
+.black{
+    @apply bg-black
+}
+
+.yellow{
+    @apply bg-yellow-600
+}
+
+.gray{
+    @apply bg-gray-600
+}
+
+.white{
+    @apply bg-white
+}

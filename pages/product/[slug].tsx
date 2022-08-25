@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { MongoClient } from "mongodb";
 import Product from "../../models/Product";
-
+// import "./index.css";
 import { HiStar } from "react-icons/hi";
 import { BsSuitHeart } from "react-icons/bs";
 
 const mongoose = require("mongoose");
-const uri="mongodb+srv://salmankhan:salmankhan1998@cluster0.95nnhdx.mongodb.net/?retryWrites=true&w=majority";
+const uri =
+  "mongodb+srv://salmankhan:salmankhan1998@cluster0.95nnhdx.mongodb.net/?retryWrites=true&w=majority";
 
 const Images = [
   "/images/shirts/image1.jpeg",
@@ -16,46 +17,61 @@ const Images = [
   "/images/shirts/image4.jpeg",
 ];
 
-const Slug = ({ addToCart, product, colorSizeSlug}: any) => {
-  console.log("product of slug",product);
-  console.log("variants of slug",colorSizeSlug);
-  
+const Slug = ({ addToCart, product, variants }: any) => {
+  console.log("product of slug", product);
+  console.log("variants of slug", variants);
+
+
+  const [currentSize, setCurrentSize]= useState('')
+  const [service, setService] = useState();
   const [src, setSrc] = useState("");
   const [pin, setPin] = useState();
-  const [service, setService] = useState();
   const router = useRouter();
   const { slug } = router.query;
+  const sizes: Array<string> = [];
+  const colors: Array<string> = []
+
+  for( let color of Object.keys(variants)){
+    // console.log("colors",color);
+    colors.push(color);
+  }
+  for (let item of Object.keys(variants)) {
+    Object.keys(variants[item]).map((val) => {
+      sizes.push(val);
+    });
+  }
 
   const checkServiceability = async () => {
     const res = await fetch("http://localhost:3000/api/pincode");
-    
+
     const pinData = await res.json();
     // pinData && console.log("pin codes",pinData);
-      // @ts-ignore
+    // @ts-ignore
     if (pinData.pinCodes.includes(parseInt(pin))) {
       // @ts-ignore
       setService(true);
-    }
-    else{
+    } else {
       // @ts-ignore
       setService(false);
     }
   };
 
+  const changeVariant = (color: string, size: string)=>{
+    console.log("color",color, "size",size)
+  }
+
   useEffect(() => {
-     async function run() {
+    async function run() {
       const res = await fetch("http://localhost:3000/api/pincode");
       // console.log('res: ', res);
     }
+    run();
+  }, []);
 
-    run()
-    
-  },[])
-
-  const handleChange = (e : Event)=>{
-      // @ts-ignore
+  const handleChange = (e: Event) => {
+    // @ts-ignore
     setPin(e.target.value);
-  }
+  };
 
   return (
     <section className="text-gray-600 body-font overflow-hidden">
@@ -109,19 +125,23 @@ const Slug = ({ addToCart, product, colorSizeSlug}: any) => {
             <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
               <div className="flex">
                 <span className="mr-3">Color</span>
-                <button className="border-2 border-gray-300 rounded-full w-6 h-6 focus:outline-none"></button>
-                <button className="border-2 border-gray-300 ml-1 bg-gray-700 rounded-full w-6 h-6 focus:outline-none"></button>
-                <button className="border-2 border-gray-300 ml-1 bg-pink-500 rounded-full w-6 h-6 focus:outline-none"></button>
+                {colors.map((color,index) => {
+                  return (
+                    <button
+                      key={index}
+                      onClick={()=>{changeVariant(color, currentSize)}}
+                      className={`border-2 ${color} ${color == "red" && "border border-gray-600"} rounded-full w-6 h-6 focus:outline-none`}
+                    ></button>
+                  );
+                })}
               </div>
               <div className="flex ml-6 items-center">
                 <span className="mr-3">Size</span>
                 <div className="relative">
-                  <select className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-base pl-3 pr-10">
-                    <option>S</option>
-                    <option>M</option>
-                    <option>L</option>
-                    <option>XL</option>
-                    <option>XXL</option>
+                  <select onChange={(e)=>{setCurrentSize(e.target.value); changeVariant("red", e.target.value)}} value={currentSize} className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-base pl-3 pr-10">
+                    {sizes.map((size,index) => {
+                      return <option key={index}>{size}</option>;
+                    })}
                   </select>
                   <span className="absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center">
                     <svg
@@ -147,7 +167,19 @@ const Slug = ({ addToCart, product, colorSizeSlug}: any) => {
                 <button className="flex ml-auto text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded">
                   Buy Now
                 </button>
-                <button onClick={()=>{addToCart(slug, 1, 599,'Wear the code (XL/Blue)', 'XL',"Red")}} className="flex ml-auto text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded">
+                <button
+                  onClick={() => {
+                    addToCart(
+                      slug,
+                      1,
+                      599,
+                      "Wear the code (XL/Blue)",
+                      "XL",
+                      "Red"
+                    );
+                  }}
+                  className="flex ml-auto text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded"
+                >
                   Add to Cart
                 </button>
                 <BsSuitHeart className="text-3xl text-pink-500" />
@@ -158,27 +190,33 @@ const Slug = ({ addToCart, product, colorSizeSlug}: any) => {
                 type="text"
                 id="pin"
                 name="pin"
-                value={pin || ''}
+                value={pin || ""}
                 placeholder="Enter pin code for serviceability"
                 // @ts-ignore
-                onChange={(e: Event)=>{handleChange(e)}}
+                onChange={(e: Event) => {
+                  handleChange(e);
+                }}
                 className="max-w-[310px] w-full bg-white rounded border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
               />
               <button
                 onClick={checkServiceability}
-      // @ts-ignore
+                // @ts-ignore
                 disabled={!pin}
                 className="text-white bg-pink-500 border-0 py-2 px-8 focus:outline-none hover:bg-pink-600 rounded textLg disabled:cursor-not-allowed"
               >
                 Check
               </button>
             </div>
-            {(service && service != null) && <div className='text-green-600 mt-4' >
-              Yes! We can deliver the order to this location.
-            </div>}
-            {(!service && service != null) && <div className='text-red-600 mt-4' >
-              Sorry! Our service is not available on this location.
-            </div>}
+            {service && service != null && (
+              <div className="text-green-600 mt-4">
+                Yes! We can deliver the order to this location.
+              </div>
+            )}
+            {!service && service != null && (
+              <div className="text-red-600 mt-4">
+                Sorry! Our service is not available on this location.
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -193,27 +231,29 @@ export async function getServerSideProps(context: any) {
     console.log(" 🍃 connected to mongoDB mLab");
   });
 
-  let product = await Product.findOne({ slug: context.query.slug })
-  let variants = await Product.find({ title: product?.title })
+  let product = await Product.findOne({ slug: context.query.slug });
+  let productVariants = await Product.find({ title: product?.title });
   let colorSizeSlug = {};
 
-  for( let item of variants)
-  { //{red: { size: { slug: "slug-name"}}}
+  for (let item of productVariants) {
+    //{red: { size: { slug: "slug-name"}}}
     // @ts-ignore
-    if(Object.keys(colorSizeSlug).includes(item.color)){
+    if (Object.keys(colorSizeSlug).includes(item.color)) {
       // @ts-ignore
-      colorSizeSlug[item.color][item?.size] = {slug: item?.slug}
-    }
-    else{
+      colorSizeSlug[item.color][item?.size] = { slug: item?.slug };
+    } else {
       // @ts-ignore
       colorSizeSlug[item.color] = {};
       // @ts-ignore
-      colorSizeSlug[item.color][item?.size] = {slug: item?.slug}
+      colorSizeSlug[item.color][item?.size] = { slug: item?.slug };
     }
   }
 
   return {
-    props: {product: JSON.parse(JSON.stringify(product)), colorSizeSlug: JSON.parse(JSON.stringify(colorSizeSlug))}, // will be passed to the page component as props
+    props: {
+      product: JSON.parse(JSON.stringify(product)),
+      variants: JSON.parse(JSON.stringify(colorSizeSlug)),
+    }, // will be passed to the page component as props
   };
 }
 
