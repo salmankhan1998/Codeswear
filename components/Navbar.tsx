@@ -12,7 +12,7 @@ interface NavbarProps  {
   clearCart: Function
 };
 
-const Navbar = ({cart, subTotal, addToCart, removeFromCart, clearCart}: NavbarProps) => {
+const Navbar: React.FC<NavbarProps> = ({cart, subTotal, addToCart, removeFromCart, clearCart}) => {
   const [showCart, setShowCart] = useState(false);
   const ref = useRef();
   return (

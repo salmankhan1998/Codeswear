@@ -3,7 +3,17 @@ import Link from "next/link";
 import { AiOutlineClose } from "react-icons/ai";
 import { HiMinusSm, HiPlusSm, HiShoppingCart } from "react-icons/hi";
 
-const ShoppingCart = ({
+interface ShoppingCartProps{
+  cart: Object;
+  subTotal: Number;
+  addToCart: Function;
+  removeFromCart: Function;
+  clearCart: Function;
+  showCart: Function;
+  setShowCart: Function;
+}
+
+const ShoppingCart: React.FC<ShoppingCartProps> = ({
   cart,
   subTotal,
   addToCart,
@@ -11,7 +21,7 @@ const ShoppingCart = ({
   clearCart,
   showCart,
   setShowCart,
-}: any) => {
+}) => {
   console.log("cart --------", cart);
   return (
     <div className="w-screen h-screen bg-[#00000080] z-30 absolute top-0 right-0 transition ease-linear duration-300 ">

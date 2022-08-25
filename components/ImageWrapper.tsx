@@ -1,6 +1,16 @@
 import React from "react";
 
-const ImageWrapper = (props : any) => {
+interface ImageWrapperProps{
+  mensCollection: string;
+  shirts: string;
+  discount: string;
+  delivery: string;
+  customMug: string;
+  mug: string;
+  reverse: boolean;
+}
+
+const ImageWrapper: React.FC<ImageWrapperProps> = (props) => {
   return (
     <div className={`flex items-center gap-0.5 ${props.reverse ? 'flex-row-reverse' : ''} `}>
       <div >
