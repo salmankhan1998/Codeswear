@@ -3,13 +3,13 @@ import Link from "next/link";
 import { AiOutlineClose } from "react-icons/ai";
 import { HiMinusSm, HiPlusSm, HiShoppingCart } from "react-icons/hi";
 
-interface ShoppingCartProps{
+interface ShoppingCartProps {
   cart: Object;
   subTotal: Number;
   addToCart: Function;
   removeFromCart: Function;
   clearCart: Function;
-  showCart: Function;
+  showCart: boolean;
   setShowCart: Function;
 }
 
@@ -21,7 +21,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
   clearCart,
   showCart,
   setShowCart,
-}) => {
+}: any) => {
   console.log("cart --------", cart);
   return (
     <div className="w-screen h-screen bg-[#00000080] z-30 absolute top-0 right-0 transition ease-linear duration-300 ">
@@ -58,6 +58,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                   }}
                   className="border border-pink-500 rounded-full text-sm text-pink-500"
                 />
+
                 <p>{cart[key].qty}</p>
                 <HiPlusSm
                   onClick={() => {
@@ -79,12 +80,11 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
         <div className="text-lg font-semibold">Subtotal: ₹{subTotal}</div>
 
         <div className="flex space-x-4 w-max mx-auto mt-10">
-          <Link href={"/checkout"}
-          >
+          <Link href={"/checkout"}>
             <button
-            onClick={() => {
-              setShowCart(!showCart);
-            }}
+              onClick={() => {
+                setShowCart(!showCart);
+              }}
               disabled={Object.keys(cart).length == 0}
               className="flex items-center text-white bg-pink-500 border-0 py-1 px-4 focus:outline-none hover:bg-pink-600 rounded text-base disabled:opacity-70 disabled:cursor-not-allowed"
             >
@@ -94,11 +94,11 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
           </Link>
           <button
             disabled={Object.keys(cart).length == 0}
-            onClick={()=>{
-              clearCart(); 
-              setTimeout(()=>{
-                setShowCart(!showCart)
-              },400);
+            onClick={() => {
+              clearCart();
+              setTimeout(() => {
+                setShowCart(!showCart);
+              }, 400);
             }}
             className="flex text-white bg-pink-500 border-0 py-1 px-4 focus:outline-none hover:bg-pink-600 rounded text-base disabled:opacity-70 disabled:cursor-not-allowed"
           >

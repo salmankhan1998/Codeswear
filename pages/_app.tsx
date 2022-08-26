@@ -1,10 +1,11 @@
+import type { AppProps } from "next/app";
+import { useState, useEffect } from "react";
+import Router from "next/router";
+import { json } from "stream/consumers";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import "../styles/index.css"
 import "../styles/globals.css";
-import type { AppProps } from "next/app";
-import { useState, useEffect } from "react";
-import { json } from "stream/consumers";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [cart, setCart] = useState({});
@@ -44,6 +45,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     if(cart){
       saveCart({});
       setCart({});
+      Router.push('')
     }
   };
 

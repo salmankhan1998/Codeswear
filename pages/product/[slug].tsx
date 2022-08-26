@@ -4,6 +4,7 @@ import { MongoClient } from "mongodb";
 import Product from "../../models/Product";
 import { HiStar } from "react-icons/hi";
 import { BsSuitHeart } from "react-icons/bs";
+import { url } from "inspector";
 
 const mongoose = require("mongoose");
 const uri =
@@ -17,31 +18,42 @@ const Images = [
 ];
 
 const Slug = ({ addToCart, product, variants }: any) => {
-  console.log("product of slug", product);
+  // console.log("product of slug", product);
   console.log("variants of slug", variants);
 
 
-  // const [currentSize, setCurrentSize]= useState('')
-  const [service, setService] = useState();
-  const [src, setSrc] = useState("");
-  const [pin, setPin] = useState();
   const router = useRouter();
   const { slug } = router.query;
-  const [sizes, setSizes]= useState(['S']);
-  const colors: Array<string> = []
+  const [pin, setPin] = useState();
+  const [src, setSrc] = useState(product.image);
+  const [service, setService] = useState();
+  const [activeSize, setActiveSize]= useState('')
+  const [activeColor, setActiveColor] = useState('')
+  const [sizes, setSizes]= useState([product.size]);
+  const [colors, setColors] = useState([product.color]);
+  let tempColor: Array<any> = [];
 
-  for( let color of Object.keys(variants)){
-    colors.push(color);
-  }
-  // for (let item of Object.keys(variants)) {
-  //   Object.keys(variants[item]).map((val) => {
-  //     sizes.push(val);
-  //   });
-  // }
+  useEffect(() => {
+    async function run() {
+      const res = await fetch("http://localhost:3000/api/pincode");
+    }
+    run();
+    for( let color of Object.keys(variants)){
+      tempColor.push(color);
+    }
+    if(tempColor.length > 0){
+      setColors(tempColor);
+      tempColor= []
+    }
+  }, []);
+
+  const handleChange = (e: Event) => {
+    // @ts-ignore
+    setPin(e.target.value);
+  };
 
   const checkServiceability = async () => {
     const res = await fetch("http://localhost:3000/api/pincode");
-
     const pinData = await res.json();
     // pinData && console.log("pin codes",pinData);
     // @ts-ignore
@@ -54,8 +66,11 @@ const Slug = ({ addToCart, product, variants }: any) => {
     }
   };
 
-  const changeVariant = (color: string, size: string)=>{
-    console.log("color",color, "check",Object.keys(variants).includes(color))
+  const changeColorVariant = (color: string, size: string)=>{
+    
+    // console.log("color",color, "check",Object.keys(variants).includes(color))
+    setActiveColor(color);
+    setActiveSize(size)
     if(Object.keys(variants).includes(color)){
       let temp = []
       for(let item of Object.keys(variants[color])){
@@ -66,20 +81,31 @@ const Slug = ({ addToCart, product, variants }: any) => {
         setSizes(temp)
       }
     }
+    console.log("color ===", color, "size ===",size)
+    console.log("getting variants of color >>>>",variants[color][size]);
+    
+    if(activeColor && activeSize){
+    let url = `http://localhost:3000/product/${variants[color][size]['slug']}`;
+    console.log("url",url)// @ts-ignore
+    window.location = url;
+    }
+    // // @ts-ignore
+    // window.location = url
   }
 
-  useEffect(() => {
-    async function run() {
-      const res = await fetch("http://localhost:3000/api/pincode");
-      // console.log('res: ', res);
-    }
-    run();
-  }, []);
-
-  const handleChange = (e: Event) => {
-    // @ts-ignore
-    setPin(e.target.value);
-  };
+  // const changeSizeVariant=(size: string)=>{
+  //   setActiveSize(size)
+    // for(let item of Object.values(variants)){
+    //   // @ts-ignore
+    //   console.log("size",size,"item",item)
+    //   // @ts-ignore
+    //   for(let val of Object.keys(item)){
+    //     if(size === val){
+    //       console.log("size in color",Object.keys(variants[val]))
+    //     }
+    // }
+    // }
+  // }
 
   return (
     <section className="text-gray-600 body-font overflow-hidden">
@@ -110,7 +136,7 @@ const Slug = ({ addToCart, product, variants }: any) => {
               codeswear
             </h2>
             <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">
-              {product.title} (XL/Blue)
+              {product.title} ({activeSize ? activeSize : product.size}/{activeColor ? activeColor : product.color})
             </h1>
             <div className="flex mb-4">
               <span className="flex items-center">
@@ -132,8 +158,8 @@ const Slug = ({ addToCart, product, variants }: any) => {
                   return (
                     <button
                       key={index}
-                      onClick={()=>{changeVariant(color,"S")}}
-                      className={`border-2 ${color} ${color == "red" && "border border-gray-600"} rounded-full w-6 h-6 focus:outline-none`}
+                      onClick={()=>{changeColorVariant(color,activeSize)}}
+                      className={`border-2 ${color} ${color === (activeColor || product.color) && "border border-cyan-400"} rounded-full w-6 h-6 focus:outline-none`}
                     ></button>
                   );
                 })}
@@ -141,7 +167,7 @@ const Slug = ({ addToCart, product, variants }: any) => {
               <div className="flex ml-6 items-center">
                 <span className="mr-3">Size</span>
                 <div className="relative">
-                  <select onChange={(e)=>{}} className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-base pl-3 pr-10">
+                  <select onChange={(e)=>{changeColorVariant(activeColor,e.target.value)}} className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-base pl-3 pr-10">
                     {sizes.map((size,index) => {
                       return <option key={index}>{size}</option>;
                     })}
