@@ -2,6 +2,8 @@ import React from "react";
 import Link from "next/link";
 import { AiOutlineClose } from "react-icons/ai";
 import { HiMinusSm, HiPlusSm, HiShoppingCart } from "react-icons/hi";
+import Button from "./Button";
+import { useRouter } from "next/router";
 
 interface ShoppingCartProps {
   cart: Object;
@@ -22,6 +24,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
   showCart,
   setShowCart,
 }: any) => {
+  const router = useRouter();
   console.log("cart --------", cart);
   return (
     <div className="w-screen h-screen bg-[#00000080] z-30 absolute top-0 right-0 transition ease-linear duration-300 ">
@@ -42,7 +45,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
           {Object.keys(cart).map((key, i) => (
             <li key={key} className=" list-decimal flex space-x-10 my-4">
               <span className="text-lg font-semibold">
-                {i + 1}. {cart[key].name}
+                {i + 1}. {cart[key].name} ({cart[key].size}/{cart[key].variant})
               </span>
               <span className="flex items-center space-x-2">
                 <HiMinusSm
@@ -80,30 +83,28 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
         <div className="text-lg font-semibold">Subtotal: ₹{subTotal}</div>
 
         <div className="flex space-x-4 w-max mx-auto mt-10">
-          <Link href={"/checkout"}>
-            <button
-              onClick={() => {
-                setShowCart(!showCart);
-              }}
-              disabled={Object.keys(cart).length == 0}
-              className="flex items-center text-white bg-pink-500 border-0 py-1 px-4 focus:outline-none hover:bg-pink-600 rounded text-base disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              <HiShoppingCart />
-              Checkout
-            </button>
-          </Link>
-          <button
-            disabled={Object.keys(cart).length == 0}
-            onClick={() => {
+          <Button
+            title="Checkout"
+            disable={Object.keys(cart).length == 0}
+            variant="contained"
+            icon="shoppingCart"
+            handleClick={() => {
+              setShowCart(!showCart);
+              router.push("/checkout");
+            }}
+          />
+          <Button
+            title="Clear Cart"
+            disable={Object.keys(cart).length == 0}
+            variant="contained"
+            icon=""
+            handleClick={() => {
               clearCart();
               setTimeout(() => {
                 setShowCart(!showCart);
               }, 400);
             }}
-            className="flex text-white bg-pink-500 border-0 py-1 px-4 focus:outline-none hover:bg-pink-600 rounded text-base disabled:opacity-70 disabled:cursor-not-allowed"
-          >
-            Clear Cart
-          </button>
+          />
         </div>
       </div>
     </div>

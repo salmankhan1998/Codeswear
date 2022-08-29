@@ -5,6 +5,7 @@ import Product from "../../models/Product";
 import { HiStar } from "react-icons/hi";
 import { BsSuitHeart } from "react-icons/bs";
 import { url } from "inspector";
+import Button from "../../components/Button";
 
 const mongoose = require("mongoose");
 const uri =
@@ -17,19 +18,19 @@ const Images = [
   "/images/shirts/image4.jpeg",
 ];
 
-const Slug = ({ addToCart, product, variants }: any) => {
+const Slug = ({ addToCart, buyNow, product, variants }: any) => {
   // console.log("product of slug", product);
-  console.log("variants of slug", variants);
-
+  // console.log("variants of slug", variants);
 
   const router = useRouter();
   const { slug } = router.query;
+  console.log("query",router)
   const [pin, setPin] = useState();
   const [src, setSrc] = useState(product.image);
   const [service, setService] = useState();
-  const [activeSize, setActiveSize]= useState('')
-  const [activeColor, setActiveColor] = useState('')
-  const [sizes, setSizes]= useState([product.size]);
+  const [activeSize, setActiveSize] = useState("");
+  const [activeColor, setActiveColor] = useState("");
+  const [sizes, setSizes] = useState([product.size]);
   const [colors, setColors] = useState([product.color]);
   let tempColor: Array<any> = [];
 
@@ -38,26 +39,31 @@ const Slug = ({ addToCart, product, variants }: any) => {
       const res = await fetch("http://localhost:3000/api/pincode");
     }
     run();
-    for( let color of Object.keys(variants)){
+    for (let color of Object.keys(variants)) {
       tempColor.push(color);
     }
-    if(tempColor.length > 0){
+    if (tempColor.length > 0) {
       setColors(tempColor);
-      tempColor= []
+      tempColor = [];
     }
   }, []);
 
+  useEffect(()=>{
+    // @ts-ignore
+       setService()
+  },[pin])
+
   const handleChange = (e: Event) => {
     // @ts-ignore
-    setPin(e.target.value);
+    let val = e.target.value;
+    setPin(val);
   };
 
   const checkServiceability = async () => {
     const res = await fetch("http://localhost:3000/api/pincode");
     const pinData = await res.json();
-    // pinData && console.log("pin codes",pinData);
     // @ts-ignore
-    if (pinData.pinCodes.includes(parseInt(pin))) {
+    if (pinData.pinCodes.includes(pin)) {
       // @ts-ignore
       setService(true);
     } else {
@@ -66,45 +72,44 @@ const Slug = ({ addToCart, product, variants }: any) => {
     }
   };
 
-  const changeColorVariant = (color: string, size: string)=>{
-    
+  const changeColorVariant = (color: string, size: string) => {
     // console.log("color",color, "check",Object.keys(variants).includes(color))
     setActiveColor(color);
-    setActiveSize(size)
-    if(Object.keys(variants).includes(color)){
-      let temp = []
-      for(let item of Object.keys(variants[color])){
-        temp.push(item)
+    setActiveSize(size);
+    if (Object.keys(variants).includes(color)) {
+      let temp = [];
+      for (let item of Object.keys(variants[color])) {
+        temp.push(item);
       }
-      if(temp.length > 0 ){
+      if (temp.length > 0) {
         // @ts-ignore
-        setSizes(temp)
+        setSizes(temp);
       }
     }
-    console.log("color ===", color, "size ===",size)
-    console.log("getting variants of color >>>>",variants[color][size]);
-    
-    if(activeColor && activeSize){
-    let url = `http://localhost:3000/product/${variants[color][size]['slug']}`;
-    console.log("url",url)// @ts-ignore
-    window.location = url;
+    console.log("color ===", color, "size ===", size);
+    console.log("getting variants of color >>>>", variants[color][size]);
+
+    if (activeColor && activeSize) {
+      let url = `http://localhost:3000/product/${variants[color][size]["slug"]}`;
+      console.log("url", url); // @ts-ignore
+      window.location = url;
     }
     // // @ts-ignore
     // window.location = url
-  }
+  };
 
   // const changeSizeVariant=(size: string)=>{
   //   setActiveSize(size)
-    // for(let item of Object.values(variants)){
-    //   // @ts-ignore
-    //   console.log("size",size,"item",item)
-    //   // @ts-ignore
-    //   for(let val of Object.keys(item)){
-    //     if(size === val){
-    //       console.log("size in color",Object.keys(variants[val]))
-    //     }
-    // }
-    // }
+  // for(let item of Object.values(variants)){
+  //   // @ts-ignore
+  //   console.log("size",size,"item",item)
+  //   // @ts-ignore
+  //   for(let val of Object.keys(item)){
+  //     if(size === val){
+  //       console.log("size in color",Object.keys(variants[val]))
+  //     }
+  // }
+  // }
   // }
 
   return (
@@ -136,7 +141,8 @@ const Slug = ({ addToCart, product, variants }: any) => {
               codeswear
             </h2>
             <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">
-              {product.title} ({activeSize ? activeSize : product.size}/{activeColor ? activeColor : product.color})
+              {product.title} ({activeSize ? activeSize : product.size}/
+              {activeColor ? activeColor : product.color})
             </h1>
             <div className="flex mb-4">
               <span className="flex items-center">
@@ -144,22 +150,25 @@ const Slug = ({ addToCart, product, variants }: any) => {
                 <HiStar className="w-4 h-4 text-pink-500" />
                 <HiStar className="w-4 h-4 text-pink-500" />
                 <HiStar className="w-4 h-4 text-pink-500" />
-                <HiStar className="w-4 h-4" />
-                <span className="text-gray-600 ml-3">4 Reviews</span>
+                <HiStar className="w-4 h-4 " />
+                <span className="text-gray-600 ml-3 ">4 Reviews</span>
               </span>
             </div>
-            <p className="leading-relaxed">
-             {product.description}
-            </p>
+            <p className="leading-relaxed">{product.description}</p>
             <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
               <div className="flex">
                 <span className="mr-3">Color</span>
-                {colors.map((color,index) => {
+                {colors.map((color, index) => {
                   return (
                     <button
                       key={index}
-                      onClick={()=>{changeColorVariant(color,activeSize)}}
-                      className={`border-2 ${color} ${color === (activeColor || product.color) && "border border-cyan-400"} rounded-full w-6 h-6 focus:outline-none`}
+                      onClick={() => {
+                        changeColorVariant(color, activeSize);
+                      }}
+                      className={`border-2 ${color} ${
+                        color === (activeColor || product.color) &&
+                        "border border-cyan-400"
+                      } rounded-full w-6 h-6 focus:outline-none`}
                     ></button>
                   );
                 })}
@@ -167,8 +176,13 @@ const Slug = ({ addToCart, product, variants }: any) => {
               <div className="flex ml-6 items-center">
                 <span className="mr-3">Size</span>
                 <div className="relative">
-                  <select onChange={(e)=>{changeColorVariant(activeColor,e.target.value)}} className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-base pl-3 pr-10">
-                    {sizes.map((size,index) => {
+                  <select
+                    onChange={(e) => {
+                      changeColorVariant(activeColor, e.target.value);
+                    }}
+                    className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-base pl-3 pr-10"
+                  >
+                    {sizes.map((size, index) => {
                       return <option key={index}>{size}</option>;
                     })}
                   </select>
@@ -193,24 +207,34 @@ const Slug = ({ addToCart, product, variants }: any) => {
                 ₹ {product.price}
               </span>
               <div className="flex items-center space-x-4">
-                <button className="flex ml-auto text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded">
-                  Buy Now
-                </button>
-                <button
-                  onClick={() => {
+                <Button
+                  title="Buy Now"
+                  disable={false}
+                  variant="contained"
+                  icon=""
+                  handleClick={() => {buyNow(slug,
+                    1,
+                    product.price,
+                    product.title,
+                    activeSize ? activeSize : product.size,
+                    activeColor ? activeColor : product.color)}}
+                />
+                <Button
+                  title="Add to Cart"
+                  disable={false}
+                  variant="contained"
+                  icon=""
+                  handleClick={() => {
                     addToCart(
                       slug,
                       1,
-                      599,
-                      "Wear the code (XL/Blue)",
-                      "XL",
-                      "Red"
+                      product.price,
+                      product.title,
+                      activeSize ? activeSize : product.size,
+                      activeColor ? activeColor : product.color
                     );
                   }}
-                  className="flex ml-auto text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded"
-                >
-                  Add to Cart
-                </button>
+                />
                 <BsSuitHeart className="text-3xl text-pink-500" />
               </div>
             </div>
@@ -219,7 +243,7 @@ const Slug = ({ addToCart, product, variants }: any) => {
                 type="text"
                 id="pin"
                 name="pin"
-                value={pin || ""}
+                // value={pin || ""}
                 placeholder="Enter pin code for serviceability"
                 // @ts-ignore
                 onChange={(e: Event) => {
@@ -227,14 +251,13 @@ const Slug = ({ addToCart, product, variants }: any) => {
                 }}
                 className="max-w-[310px] w-full bg-white rounded border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
               />
-              <button
-                onClick={checkServiceability}
-                // @ts-ignore
-                disabled={!pin}
-                className="text-white bg-pink-500 border-0 py-2 px-8 focus:outline-none hover:bg-pink-600 rounded textLg disabled:cursor-not-allowed"
-              >
-                Check
-              </button>
+              <Button
+                title="Check"
+                disable={!pin}
+                variant="contained"
+                icon=""
+                handleClick={checkServiceability}
+              />
             </div>
             {service && service != null && (
               <div className="text-green-600 mt-4">

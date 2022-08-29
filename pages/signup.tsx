@@ -1,7 +1,10 @@
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import Button from "../components/Button";
 
 const Signup = () => {
+  const router = useRouter()
   return (
     <section className="h-full gradient-form md:h-screen">
       <div className="container mx-auto py-12 px-6 h-full">
@@ -59,23 +62,13 @@ const Signup = () => {
                           type="button"
                           data-mdb-ripple="true"
                           data-mdb-ripple-color="light"
-                          // style="background: linear-gradient(to right,#ee7724,#d8363a,#dd3675,#b44593);"
                         >
                           Sign Up
                         </button>
                       </div>
                       <div className="flex items-center justify-between pb-6">
                         <p className="mb-0 mr-2">Already have an account?</p>
-                        <Link href={'/login'}>
-                          <button
-                            type="button"
-                            className="inline-block px-6 py-2 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out"
-                            data-mdb-ripple="true"
-                            data-mdb-ripple-color="light"
-                          >
-                            Sign In
-                          </button>
-                        </Link>
+                        <Button title="Sign In" disable={false} variant="outline" icon="" handleClick={()=>{router.push('/login')}}  />
                       </div>
                     </form>
                   </div>

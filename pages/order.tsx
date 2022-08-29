@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "../components/Button";
 
 const Order = () => {
   return (
@@ -31,32 +32,42 @@ const Order = () => {
                   <td className="px-4  border-t-2 border-gray-200 py-3">
                     Wear the code
                   </td>
-                  <td className="px-4 py-3 text-center border-t-2 border-gray-200 ">1</td>
+                  <td className="px-4 py-3 text-center border-t-2 border-gray-200 ">
+                    1
+                  </td>
                   <td className="px-4 py-3 border-t-2 border-gray-200 ">499</td>
                 </tr>
                 <tr>
                   <td className="px-4 py-3 border-t-2 border-gray-200 ">
                     Wear the code
                   </td>
-                  <td className="px-4 py-3 text-center border-t-2 border-gray-200 ">1</td>
+                  <td className="px-4 py-3 text-center border-t-2 border-gray-200 ">
+                    1
+                  </td>
                   <td className="px-4 py-3 border-t-2 border-gray-200 ">499</td>
                 </tr>
                 <tr>
                   <td className="px-4 py-3 border-t-2 border-gray-200 ">
                     Wear the code
                   </td>
-                  <td className="px-4 py-3 text-center border-t-2 border-gray-200 ">1</td>
+                  <td className="px-4 py-3 text-center border-t-2 border-gray-200 ">
+                    1
+                  </td>
                   <td className="px-4 py-3 border-t-2 border-gray-200 ">499</td>
                 </tr>
               </tbody>
             </table>
-            <div className="flex">
+            <div className="flex justify-between items-center">
               <span className="title-font font-medium text-2xl text-gray-900">
                 SubTotal: $58.00
               </span>
-              <button className="flex ml-auto text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded">
-                Track Order
-              </button>
+              <Button
+                title="Track Order"
+                disable={false}
+                variant="contained"
+                icon=""
+                handleClick={() => {}}
+              />
             </div>
           </div>
           <img

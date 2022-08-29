@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Input from "../components/Input";
+import Button from "../components/Button";
 import { HiMinusSm, HiPlusSm } from "react-icons/hi";
 import { BsBagCheckFill } from "react-icons/bs";
+import router from "next/router";
 
 const Checkout = ({
   cart,
@@ -173,33 +175,28 @@ const Checkout = ({
         <div className="text-base font-semibold mt-2">
           Subtotal: ₹{subTotal}
         </div>
-        {/* {Object.keys(cart).length !== 0 && (
-          <div className="flex space-x-4  mt-7">
-            <Link href={"/checkout"}>
-              <button className="flex items-center text-white bg-pink-500 border-0 py-1 px-4 focus:outline-none hover:bg-pink-600 rounded text-base">
-                <HiShoppingCart />
-                Checkout
-              </button>
-            </Link>
-            <button
-              onClick={clearCart}
-              className="flex  text-white bg-pink-500 border-0 py-1 px-4 focus:outline-none hover:bg-pink-600 rounded text-base"
-            >
-              Clear Cart
-            </button>
-          </div>
-          )} */}
+        {Object.keys(cart).length !== 0 && (
+          <Button
+            title="Clear Cart"
+            disable={Object.keys(cart).length == 0}
+            variant="contained"
+            icon=""
+            handleClick={() => {
+              clearCart();
+              // path May be replaced later
+              router.push('/tshirts');
+            }}
+          />
+          )}
       </div>
       <div className="px-3 py-5">
-        <Link href={"/checkout"}>
-          <button
-            disabled={Object.keys(cart).length == 0}
-            className="flex items-center text-white bg-pink-500 border-0 py-1 px-4 focus:outline-none hover:bg-pink-600 rounded text-base disabled:opacity-70 disabled:pointer-events-none"
-          >
-            <BsBagCheckFill className="mr-2" />
-            Pay {subTotal}
-          </button>
-        </Link>
+        <Button
+          title={`Pay ${subTotal}`}
+          disable={Object.keys(cart).length == 0}
+          variant="contained"
+          icon="bag"
+          handleClick={() => {}}
+        />
       </div>
     </div>
   );

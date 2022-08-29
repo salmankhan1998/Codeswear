@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Input from "../components/Input";
+import Button from "../components/Button";
 
 const AddProduct = () => {
   const [product, setProduct] = useState({});
@@ -187,16 +188,13 @@ const AddProduct = () => {
           }}
         />
         <div className="flex justify-end">
-          <button
-            className="inline-block w-max mt-5 px-6 py-2.5 text-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-pink-500 hover:shadow-lg hover:text-white focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out mb-3 border border-pink-500"
-            type="button"
-            data-mdb-ripple="true"
-            data-mdb-ripple-color="light"
-            onClick={AddProduct}
-            // style="background: linear-gradient(to right,#ee7724,#d8363a,#dd3675,#b44593);"
-          >
-            Add Product
-          </button>
+          <Button
+            title="Add Product"
+            disable={false}
+            variant="outline"
+            icon=""
+            handleClick={AddProduct}
+          />
         </div>
       </form>
     </div>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 import {
   FaFacebookF,
@@ -15,7 +16,7 @@ const Footer = () => {
             <img src="/images/logo.webp" alt="logo" className="w-full h-full" />
           </a>
           <p className="mt-2 text-sm text-gray-500">
-            Wear the {"<code/>"}
+            Wear the &lt;code/&gt;
             <br />
             Premium coding tshirts, hoodies and apparals
           </p>
@@ -27,24 +28,32 @@ const Footer = () => {
             </h2>
             <nav className="list-none mb-10">
               <li>
+                <Link href={"/tshirts"}>
                 <a className="text-gray-600 hover:text-gray-800 cursor-pointer">
                   Tshirts
                 </a>
+                </Link>
               </li>
               <li>
+                <Link href={"/hoodies"}>
                 <a className="text-gray-600 hover:text-gray-800 cursor-pointer">
                   Hoodies
                 </a>
+                </Link>
               </li>
               <li>
+                <Link href={"/stickers"}>
                 <a className="text-gray-600 hover:text-gray-800 cursor-pointer">
                   Stickers
                 </a>
+                </Link>
               </li>
               <li>
+                <Link href={"/mugs"}>
                 <a className="text-gray-600 hover:text-gray-800 cursor-pointer">
                   Mugs
                 </a>
+                </Link>
               </li>
             </nav>
           </div>

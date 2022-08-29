@@ -1,10 +1,9 @@
 import type { AppProps } from "next/app";
 import { useState, useEffect } from "react";
 import Router from "next/router";
-import { json } from "stream/consumers";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import "../styles/index.css"
+import "../styles/index.css";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -29,12 +28,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   const saveCart = (myCart: any) => {
-    console.log("save to cart ++++++++++",myCart);
+    console.log("save to cart ++++++++++", myCart);
     let total = 0;
     let keys = Object.keys(myCart);
     localStorage.setItem("cart", JSON.stringify(myCart));
     for (let i = 0; i < keys.length; i++) {
-      total += myCart[keys[i]]['price'] * myCart[keys[i]]['qty']; // Multiplying price of item with total quantity
+      total += myCart[keys[i]]["price"] * myCart[keys[i]]["qty"]; // Multiplying price of item with total quantity
     }
     // @ts-ignore
     setSubTotal(total);
@@ -42,10 +41,10 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const clearCart = () => {
     console.log("clear cart -----------");
-    if(cart){
+    if (cart) {
       saveCart({});
       setCart({});
-      Router.push('')
+      // Router.push("/");
     }
   };
 
@@ -70,6 +69,23 @@ function MyApp({ Component, pageProps }: AppProps) {
     saveCart(newCart);
   };
 
+  const buyNow = (
+    itemId: any,
+    qty: any,
+    price: any,
+    name: any,
+    size: any,
+    variant: any
+  ) => {
+    clearCart();
+    let newCart = {};
+    // @ts-ignore
+    newCart[itemId] = { qty: 1, price, name, size, variant };
+    setCart(newCart)
+    saveCart(newCart);
+    Router.push('/checkout')
+  };
+
   const removeFromCart = (
     itemId: any,
     qty: any,
@@ -79,9 +95,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     variant: any
   ) => {
     let newCart = cart;
-      // @ts-ignore
-    
-    console.log("remove from cart >>>>>>>>>>>",cart);
+    // @ts-ignore
+
+    console.log("remove from cart >>>>>>>>>>>", cart);
     if (itemId in cart) {
       // @ts-ignore
       newCart[itemId].qty = cart[itemId].qty - qty;
@@ -112,6 +128,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           subTotal={subTotal}
           clearCart={clearCart}
           addToCart={addToCart}
+          buyNow={buyNow}
           removeFromCart={removeFromCart}
           {...pageProps}
         />
