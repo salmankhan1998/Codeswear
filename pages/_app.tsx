@@ -80,7 +80,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     clearCart();
     let newCart = {};
     // @ts-ignore
-    newCart[itemId] = { qty: 1, price, name, size, variant };
+    newCart[itemId] = { qty: qty, price, name, size, variant };
     setCart(newCart)
     saveCart(newCart);
     Router.push('/checkout')

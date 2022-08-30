@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { MongoClient } from "mongodb";
 import Product from "../../models/Product";
 import { HiStar } from "react-icons/hi";
 import { BsSuitHeart } from "react-icons/bs";
-import { url } from "inspector";
 import Button from "../../components/Button";
-
-const mongoose = require("mongoose");
-const uri =
-  "mongodb+srv://salmankhan:salmankhan1998@cluster0.95nnhdx.mongodb.net/?retryWrites=true&w=majority";
+import { connectDB } from "../../lib/connectDB";
 
 const Images = [
   "/images/shirts/image1.jpeg",
@@ -24,14 +19,13 @@ const Slug = ({ addToCart, buyNow, product, variants }: any) => {
 
   const router = useRouter();
   const { slug } = router.query;
-  console.log("query",router)
   const [pin, setPin] = useState();
   const [src, setSrc] = useState(product.image);
   const [service, setService] = useState();
   const [activeSize, setActiveSize] = useState("");
-  const [activeColor, setActiveColor] = useState("");
+  const [activeColor, setActiveColor] = useState(product.color);
   const [sizes, setSizes] = useState([product.size]);
-  const [colors, setColors] = useState([product.color]);
+  const [colors, setColors] = useState([]);
   let tempColor: Array<any> = [];
 
   useEffect(() => {
@@ -39,6 +33,7 @@ const Slug = ({ addToCart, buyNow, product, variants }: any) => {
       const res = await fetch("http://localhost:3000/api/pincode");
     }
     run();
+    changeColor(product.color)
     for (let color of Object.keys(variants)) {
       tempColor.push(color);
     }
@@ -46,6 +41,7 @@ const Slug = ({ addToCart, buyNow, product, variants }: any) => {
       setColors(tempColor);
       tempColor = [];
     }
+
   }, []);
 
   useEffect(()=>{
@@ -72,10 +68,8 @@ const Slug = ({ addToCart, buyNow, product, variants }: any) => {
     }
   };
 
-  const changeColorVariant = (color: string, size: string) => {
-    // console.log("color",color, "check",Object.keys(variants).includes(color))
+  const changeColor = (color: string) => {
     setActiveColor(color);
-    setActiveSize(size);
     if (Object.keys(variants).includes(color)) {
       let temp = [];
       for (let item of Object.keys(variants[color])) {
@@ -86,31 +80,30 @@ const Slug = ({ addToCart, buyNow, product, variants }: any) => {
         setSizes(temp);
       }
     }
-    console.log("color ===", color, "size ===", size);
-    console.log("getting variants of color >>>>", variants[color][size]);
-
-    if (activeColor && activeSize) {
-      let url = `http://localhost:3000/product/${variants[color][size]["slug"]}`;
-      console.log("url", url); // @ts-ignore
-      window.location = url;
-    }
-    // // @ts-ignore
-    // window.location = url
   };
 
-  // const changeSizeVariant=(size: string)=>{
-  //   setActiveSize(size)
-  // for(let item of Object.values(variants)){
-  //   // @ts-ignore
-  //   console.log("size",size,"item",item)
-  //   // @ts-ignore
-  //   for(let val of Object.keys(item)){
-  //     if(size === val){
-  //       console.log("size in color",Object.keys(variants[val]))
-  //     }
-  // }
-  // }
-  // }
+  const changeVariant = (color: string, size: string) => {
+    // setActiveColor(color);
+    setActiveSize(size);
+    // if (Object.keys(variants).includes(color)) {
+    //   let temp = [];
+    //   for (let item of Object.keys(variants[color])) {
+    //     temp.push(item);
+    //   }
+    //   if (temp.length > 0) {
+    //     // @ts-ignore
+    //     setSizes(temp);
+    //   }
+    // }
+
+    if (color && size) {
+      console.log("getting variants of color >>>>", `http://localhost:3000/product/${variants[color][size]["slug"]}`);
+      let url = `http://localhost:3000/product/${variants[color][size]["slug"]}`;
+      // @ts-ignore
+      window.location = url;
+    }
+  };
+
 
   return (
     <section className="text-gray-600 body-font overflow-hidden">
@@ -163,10 +156,10 @@ const Slug = ({ addToCart, buyNow, product, variants }: any) => {
                     <button
                       key={index}
                       onClick={() => {
-                        changeColorVariant(color, activeSize);
+                        changeColor(color);
                       }}
                       className={`border-2 ${color} ${
-                        color === (activeColor || product.color) &&
+                        color === activeColor &&
                         "border border-cyan-400"
                       } rounded-full w-6 h-6 focus:outline-none`}
                     ></button>
@@ -178,10 +171,13 @@ const Slug = ({ addToCart, buyNow, product, variants }: any) => {
                 <div className="relative">
                   <select
                     onChange={(e) => {
-                      changeColorVariant(activeColor, e.target.value);
+                      changeVariant(activeColor, e.target.value);
                     }}
+                    defaultValue={'DEFAULT'}
                     className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-base pl-3 pr-10"
                   >
+                    {/* <option value="" selected disabled hidden>Choose size</option> */}
+                    <option value="DEFAULT" disabled>Choose size</option>
                     {sizes.map((size, index) => {
                       return <option key={index}>{size}</option>;
                     })}
@@ -277,11 +273,7 @@ const Slug = ({ addToCart, buyNow, product, variants }: any) => {
 };
 
 export async function getServerSideProps(context: any) {
-  const db = mongoose.connect(uri);
-  mongoose.Promise = global.Promise;
-  mongoose.connection.once("open", () => {
-    console.log(" 🍃 connected to mongoDB mLab");
-  });
+  connectDB();
 
   let product = await Product.findOne({ slug: context.query.slug });
   let productVariants = await Product.find({ title: product?.title });

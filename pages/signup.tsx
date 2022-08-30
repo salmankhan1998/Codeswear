@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Button from "../components/Button";
+import Input from "../components/Input";
+import axios from "axios";
 
 const Signup = () => {
-  const router = useRouter()
+  const router = useRouter();
+  const [user, setUser] = useState({});
+
+  const handleChange = (key: string, value: string) => {
+    setUser({ ...user, [key]: value });
+  };
+
+  const handleSignUp = () => {
+    console.log("user", user);
+    axios
+      .post("http://localhost:3000/api/signUp", user)
+      .then((response) => {
+        console.log("response", response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <section className="h-full gradient-form md:h-screen">
       <div className="container mx-auto py-12 px-6 h-full">
@@ -12,10 +31,7 @@ const Signup = () => {
           <div className="xl:w-10/12">
             <div className="block bg-white shadow-2xl rounded-lg">
               <div className="lg:flex lg:flex-wrap g-0">
-                <div
-                  className="text-4xl lg:w-6/12 flex items-center justify-center lg:rounded-r-lg rounded-b-lg lg:rounded-bl-none font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 uppercase"
-                  // style="background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);"
-                >
+                <div className="text-4xl lg:w-6/12 flex items-center justify-center lg:rounded-r-lg rounded-b-lg lg:rounded-bl-none font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 uppercase">
                   codeswear.com
                 </div>
                 <div className="lg:w-6/12 px-4 md:px-0">
@@ -32,28 +48,39 @@ const Signup = () => {
                         Sign Up to your account
                       </p>
                       <div className="mb-4">
-                        {/* <Input label='' type="text" id="username" placeholder="Username" handleChange={()=>{console.log("sasda")}}/> */}
-                        <input
-                          type='text'
+                        <Input
+                          label=""
+                          type="text"
                           id="name"
                           placeholder="Name"
-                          className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-pink-500 focus:outline-none"
+                          handleChange={(e) => {
+                            // @ts-ignore
+                            handleChange("name", e.target.value);
+                          }}
                         />
                       </div>
                       <div className="mb-4">
-                        <input
-                          type='email'
+                        <Input
+                          label=""
+                          type="email"
                           id="email"
                           placeholder="Email"
-                          className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-pink-500 focus:outline-none"
+                          handleChange={(e) => {
+                            // @ts-ignore
+                            handleChange("email", e.target.value);
+                          }}
                         />
                       </div>
                       <div className="mb-4">
-                        <input
+                        <Input
+                          label=""
                           type="password"
                           id="password"
-                          placeholder="Password"
-                          className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-pink-500 focus:outline-none"
+                          placeholder="Passsword"
+                          handleChange={(e) => {
+                            // @ts-ignore
+                            handleChange("password", e.target.value);
+                          }}
                         />
                       </div>
                       <div className="text-center pt-1 mb-12 pb-1">
@@ -62,13 +89,22 @@ const Signup = () => {
                           type="button"
                           data-mdb-ripple="true"
                           data-mdb-ripple-color="light"
+                          onClick={handleSignUp}
                         >
                           Sign Up
                         </button>
                       </div>
                       <div className="flex items-center justify-between pb-6">
                         <p className="mb-0 mr-2">Already have an account?</p>
-                        <Button title="Sign In" disable={false} variant="outline" icon="" handleClick={()=>{router.push('/login')}}  />
+                        <Button
+                          title="Sign In"
+                          disable={false}
+                          variant="outline"
+                          icon=""
+                          handleClick={() => {
+                            router.push("/login");
+                          }}
+                        />
                       </div>
                     </form>
                   </div>

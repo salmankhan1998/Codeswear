@@ -27,7 +27,6 @@ const Login = () => {
                         Sign in to your account
                       </p>
                       <div className="mb-4">
-                        {/* <Input label='' type="text" id="username" placeholder="Username" handleChange={()=>{console.log("sasda")}}/> */}
                         <input
                           type="text"
                           id="username"

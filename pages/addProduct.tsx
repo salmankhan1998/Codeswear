@@ -8,15 +8,12 @@ const AddProduct = () => {
   const [logo, setLogo] = useState(null);
 
   const handleChange = (e: any, name: string) => {
-    console.log(e.target.value);
     let val = e.target.value;
     setProduct({ ...product, [name]: val });
   };
 
   const handleImage = (e: any, name: string) => {
-    console.log("file : ", e.target.value);
     let file = e.target.files[0];
-    console.log("file : ", file);
     if (file) {
       // @ts-ignore
       setProduct({ ...product, [name]: URL.createObjectURL(file) });
@@ -31,10 +28,10 @@ const AddProduct = () => {
     axios
       .post("http://localhost:3000/api/add_product", product)
       .then(function (response) {
-        console.log(response);
+        console.log("response",response);
       })
       .catch(function (error) {
-        console.log(error);
+        console.log("error: ",error);
       });
 
     // setPostsState([...postsState, res]);
@@ -120,9 +117,9 @@ const AddProduct = () => {
             }}
           >
             <option value=""></option>
-            <option value="shirt">Shirt</option>
+            <option value="shirts">Shirt</option>
             <option value="mug">Mug</option>
-            <option value="hoodie">Hoodie</option>
+            <option value="hoodies">Hoodie</option>
             <option value="sticker">Sticker</option>
           </select>
         </div>

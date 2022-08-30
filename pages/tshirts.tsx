@@ -1,65 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { MongoClient } from "mongodb";
+import React from "react";
 import Product from "../models/Product";
 import Link from "next/link";
 import axios from "axios";
-
-const mongoose = require("mongoose");
-const uri="mongodb+srv://salmankhan:salmankhan1998@cluster0.95nnhdx.mongodb.net/?retryWrites=true&w=majority";
+import { connectDB } from "../lib/connectDB";
 
 const Tshirts = ({products}: any) => {
   console.log("props", products)
-  // const [products, setProducts] = useState([]);
-  const data = [
-    {
-      imageUrl: "/images/shirts/image1.jpeg",
-      title: "Codec",
-      actualPrice: "599",
-      discountedPrice: "449",
-      colors: ["blue", "black"],
-      size: ["M", "L", "XL", "XXL"],
-    },
-    {
-      imageUrl: "/images/shirts/image2.jpeg",
-      title: "Comics",
-      actualPrice: "799",
-      discountedPrice: "699",
-      colors: ["red", "blue", "black"],
-      size: ["S", "M", "L", "XL"],
-    },
-    {
-      imageUrl: "/images/shirts/image3.jpeg",
-      title: "Css lovers",
-      actualPrice: "999",
-      discountedPrice: "799",
-      colors: ["red", "blue"],
-      size: ["S", "M", "L"],
-    },
-    {
-      imageUrl: "/images/shirts/image4.jpeg",
-      title: "Youtubers",
-      actualPrice: "799",
-      discountedPrice: "699",
-      colors: ["red", "blue", "black", "yellow"],
-      size: ["S", "M", "L", "XL", "XXL"],
-    },
-    {
-      imageUrl: "/images/shirts/image2.jpeg",
-      title: "Comics",
-      actualPrice: "799",
-      discountedPrice: "699",
-      colors: ["red", "black"],
-      size: ["S", "M", "L", "XL"],
-    },
-    {
-      imageUrl: "/images/shirts/image1.jpeg",
-      title: "Eat Sleep Code Repeat",
-      actualPrice: "599",
-      discountedPrice: "449",
-      colors: ["red", "blue", "black"],
-      size: ["M", "L", "XL", "XXL"],
-    },
-  ];
 
   // useEffect(() => {
   //   axios
@@ -149,13 +95,9 @@ const Tshirts = ({products}: any) => {
 // --------- Function for server side rendering ----------- //
 
 export async function getServerSideProps(context: any) {
-  const db = mongoose.connect(uri);
-  mongoose.Promise = global.Promise;
-  mongoose.connection.once("open", () => {
-    console.log(" 🍃 connected to mongoDB mLab");
-  });
+  connectDB();
 
-  let data = await Product.find({})
+  let data = await Product.find({ category: 'shirts'})
 
   let tshirts = {};
   for( let item of data){
