@@ -1,19 +1,29 @@
 import React, { useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import ArrowDown from "../public/icons/ArrowDown";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import ShoppingCart from "./ShoppingCart";
 
-interface NavbarProps  {
-  cart: Object,
-  subTotal: Number,
-  addToCart: Function,
-  removeFromCart: Function,
-  clearCart: Function
-};
+interface NavbarProps {
+  cart: Object;
+  subTotal: Number;
+  addToCart: Function;
+  removeFromCart: Function;
+  clearCart: Function;
+  loggedIn: boolean;
+}
 
-const Navbar: React.FC<NavbarProps> = ({cart, subTotal, addToCart, removeFromCart, clearCart}) => {
+const Navbar: React.FC<NavbarProps> = ({
+  cart,
+  subTotal,
+  addToCart,
+  removeFromCart,
+  clearCart,
+  loggedIn,
+}) => {
   const [showCart, setShowCart] = useState(false);
+  const router = useRouter();
   const ref = useRef();
   return (
     <header className="bg-white text-gray-600 body-font w-full sticky top-0 border-b border-gray-200 px-10 z-50">
@@ -50,22 +60,49 @@ const Navbar: React.FC<NavbarProps> = ({cart, subTotal, addToCart, removeFromCar
               Stickers
             </a>
           </Link>
-          <Link href={"/addProduct"}>
+          {loggedIn && <Link href={"/addProduct"}>
             <a className="text-xl text-black hover:text-pink-500 cursor-pointer">
               Add Product
             </a>
-          </Link>
+          </Link>}
           <div className="flex items-center space-x-4">
-            <Link href={'/login'}>
-              <a className="text-sm text-white px-2 py-1 w-max h-8 rounded-md bg-pink-500 cursor-pointer border  hover:bg-white hover:text-pink-500 hover:border border-pink-500 transition duration-300">
-                Login
-              </a>
-            </Link>
-            <AiOutlineShoppingCart onClick={()=>{setShowCart(!showCart)}} className="border hover:bg-gray-100 border-gray-300 text-pink-500 rounded-lg p-1 h-8 w-8 cursor-pointer" />
+            {!loggedIn && (
+              <Link href={"/login"}>
+                <a className="text-sm text-white px-2 py-1 w-max h-8 rounded-md bg-pink-500 cursor-pointer border  hover:bg-white hover:text-pink-500 hover:border border-pink-500 transition duration-300">
+                  Login
+                </a>
+              </Link>
+            )}
+
+            {loggedIn && (
+              <>
+              <div 
+              onClick={()=>{localStorage.removeItem('token'); router.push('/'); window.location.reload()}}
+              className="text-sm text-white px-2 py-1 w-max h-8 rounded-md bg-pink-500 cursor-pointer border  hover:bg-white hover:text-pink-500 hover:border border-pink-500 transition duration-300">
+                LogOut
+              </div>
+              <AiOutlineShoppingCart
+                onClick={() => {
+                  setShowCart(!showCart);
+                }}
+                className="border hover:bg-gray-100 border-gray-300 text-pink-500 rounded-lg p-1 h-8 w-8 cursor-pointer"
+              />
+              </>
+            )}
           </div>
         </nav>
       </div>
-      { showCart &&  <ShoppingCart cart={cart} subTotal={subTotal} addToCart={addToCart} removeFromCart={removeFromCart} clearCart={clearCart}  showCart={showCart} setShowCart={setShowCart}/>}
+      {showCart && loggedIn && (
+        <ShoppingCart
+          cart={cart}
+          subTotal={subTotal}
+          addToCart={addToCart}
+          removeFromCart={removeFromCart}
+          clearCart={clearCart}
+          showCart={showCart}
+          setShowCart={setShowCart}
+        />
+      )}
     </header>
   );
 };

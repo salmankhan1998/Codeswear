@@ -4,25 +4,44 @@ import { useRouter } from "next/router";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import axios from "axios";
-
+// @refresh reset
 const Signup = () => {
   const router = useRouter();
-  const [user, setUser] = useState({});
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleChange = (key: string, value: string) => {
-    setUser({ ...user, [key]: value });
+  const handleChange = (e: any) => {
+    console.log(e.target.name, e.target.value)
+    if(e.target.name == 'name'){
+      setName(e.target.value);
+    }
+    else if(e.target.name == 'email'){
+      setEmail(e.target.value);
+    }
+    else if(e.target.name == 'password'){
+      setPassword(e.target.value);
+    }
   };
 
   const handleSignUp = () => {
-    console.log("user", user);
+    let data = {'name': name, 'email': email, 'password': password}
+    console.log("user", data);
     axios
-      .post("http://localhost:3000/api/signUp", user)
+      .post("http://localhost:3000/api/signUp", data)
       .then((response) => {
         console.log("response", response);
+        if(response.statusText == "OK"){
+          // alert("User sucessfully added")
+          router.push('/login')
+        }
       })
       .catch((error) => {
         console.log(error);
       });
+    setName('');
+    setEmail('');
+    setPassword('');
   };
   return (
     <section className="h-full gradient-form md:h-screen">
@@ -52,10 +71,11 @@ const Signup = () => {
                           label=""
                           type="text"
                           id="name"
+                          value={name}
                           placeholder="Name"
                           handleChange={(e) => {
                             // @ts-ignore
-                            handleChange("name", e.target.value);
+                            handleChange(e);
                           }}
                         />
                       </div>
@@ -64,10 +84,11 @@ const Signup = () => {
                           label=""
                           type="email"
                           id="email"
+                          value={email}
                           placeholder="Email"
                           handleChange={(e) => {
                             // @ts-ignore
-                            handleChange("email", e.target.value);
+                            handleChange(e);
                           }}
                         />
                       </div>
@@ -76,10 +97,11 @@ const Signup = () => {
                           label=""
                           type="password"
                           id="password"
+                          value={password}
                           placeholder="Passsword"
                           handleChange={(e) => {
                             // @ts-ignore
-                            handleChange("password", e.target.value);
+                            handleChange(e);
                           }}
                         />
                       </div>

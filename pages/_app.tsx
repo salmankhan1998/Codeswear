@@ -1,15 +1,17 @@
 import type { AppProps } from "next/app";
 import { useState, useEffect } from "react";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import "../styles/index.css";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter()
   const [cart, setCart] = useState({});
   const [subTotal, setSubTotal] = useState();
   const [showCart, setShowCart] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false)
   const [localCart, setLocalCart] = useState();
 
   useEffect(() => {
@@ -25,7 +27,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       console.log("error: ", error);
       localStorage.clear();
     }
-  }, []);
+    const token = localStorage.getItem('token')
+    if(token){
+      setLoggedIn(true);
+    }
+  }, [router.query]);
 
   const saveCart = (myCart: any) => {
     console.log("save to cart ++++++++++", myCart);
@@ -121,8 +127,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         clearCart={clearCart}
         addToCart={addToCart}
         removeFromCart={removeFromCart}
+        loggedIn={loggedIn}
       />
-      <div className="max-w-[1440px] mx-auto">
+      <div className="max-w-[1440px] px-10 lg:px-0 mx-auto">
         <Component
           cart={cart}
           subTotal={subTotal}
@@ -130,6 +137,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           addToCart={addToCart}
           buyNow={buyNow}
           removeFromCart={removeFromCart}
+          loggedIn={loggedIn}
           {...pageProps}
         />
       </div>

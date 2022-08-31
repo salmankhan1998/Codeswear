@@ -1,11 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import axios from "axios";
 
 const Login = () => {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleChange = (e: any) => {
+    console.log(e.target.name , e.target.value)
+    if (e.target.name == "email") {
+      setEmail(e.target.value);
+    } else if (e.target.name == "password") {
+      setPassword(e.target.value);
+    }
+  };
+
+  const handleSubmit = () => {
+    let data = { email: email, password: password };
+    axios
+      .post("http://localhost:3000/api/login", data)
+      .then((response) => {
+        console.log("response", response);
+        localStorage.setItem('token',response.data.token)
+        if(response.data){
+          router.push("/")
+        }
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+      setEmail('');
+      setPassword('')
+  };
   return (
     <section className="h-full gradient-form md:h-screen">
       <div className="container mx-auto py-12 px-6 h-full">
@@ -27,19 +57,41 @@ const Login = () => {
                         Sign in to your account
                       </p>
                       <div className="mb-4">
-                        <input
+                        {/* <input
                           type="text"
                           id="username"
                           placeholder="Username"
                           className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-pink-500 focus:outline-none"
+                        /> */}
+                        <Input
+                          label=""
+                          type="email"
+                          id="email"
+                          value={email}
+                          placeholder="Email"
+                          handleChange={(e) => {
+                            // @ts-ignore
+                            handleChange(e);
+                          }}
                         />
                       </div>
                       <div className="mb-4 relative">
-                        <input
+                        {/* <input
                           type="password"
                           id="password"
                           placeholder="Password"
                           className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-pink-500 focus:outline-none"
+                        /> */}
+                        <Input
+                          label=""
+                          type="password"
+                          id="password"
+                          value={password}
+                          placeholder="Password"
+                          handleChange={(e) => {
+                            // @ts-ignore
+                            handleChange(e);
+                          }}
                         />
                       </div>
                       <div className="text-center pt-1 mb-12 pb-1">
@@ -48,7 +100,7 @@ const Login = () => {
                           type="button"
                           data-mdb-ripple="true"
                           data-mdb-ripple-color="light"
-                          // style="background: linear-gradient(to right,#ee7724,#d8363a,#dd3675,#b44593);"
+                          onClick={handleSubmit}
                         >
                           Sign in
                         </button>
