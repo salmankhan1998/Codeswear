@@ -1,21 +1,30 @@
 import type { AppProps } from "next/app";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import LoadingBar from "react-top-loading-bar";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import "../styles/index.css";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const router = useRouter()
+  const router = useRouter();
   const [cart, setCart] = useState({});
   const [subTotal, setSubTotal] = useState();
   const [showCart, setShowCart] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [localCart, setLocalCart] = useState();
 
   useEffect(() => {
     console.log("app running");
+    router.events.on("routeChangeStart", () => {
+      setProgress(40);
+    });
+    router.events.on("routeChangeComplete", () => {
+      setProgress(100);
+    });
+    
     try {
       if (localStorage.getItem("cart")) {
         // @ts-ignore
@@ -27,8 +36,8 @@ function MyApp({ Component, pageProps }: AppProps) {
       console.log("error: ", error);
       localStorage.clear();
     }
-    const token = localStorage.getItem('token')
-    if(token){
+    const token = localStorage.getItem("token");
+    if (token) {
       setLoggedIn(true);
     }
   }, [router.query]);
@@ -87,9 +96,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     let newCart = {};
     // @ts-ignore
     newCart[itemId] = { qty: qty, price, name, size, variant };
-    setCart(newCart)
+    setCart(newCart);
     saveCart(newCart);
-    Router.push('/checkout')
+    router.push("/checkout");
   };
 
   const removeFromCart = (
@@ -119,6 +128,12 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
+      <LoadingBar
+        color="#f11946"
+        progress={progress}
+        waitingTime={400}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <Navbar
         // @ts-ignore
         cart={cart}

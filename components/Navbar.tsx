@@ -1,8 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ArrowDown from "../public/icons/ArrowDown";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import { RiAccountPinCircleFill } from "react-icons/ri";
 import ShoppingCart from "./ShoppingCart";
 
 interface NavbarProps {
@@ -23,8 +24,18 @@ const Navbar: React.FC<NavbarProps> = ({
   loggedIn,
 }) => {
   const [showCart, setShowCart] = useState(false);
+  const [toggle, setToggle] = useState(false);
   const router = useRouter();
   const ref = useRef();
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) router.push("/");
+  }, []);
+
+  const logOut = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
   return (
     <header className="bg-white text-gray-600 body-font w-full sticky top-0 border-b border-gray-200 px-10 z-50">
       <div className="bg-white flex justify-between flex-wrap flex-col md:flex-row items-center h-20">
@@ -60,12 +71,14 @@ const Navbar: React.FC<NavbarProps> = ({
               Stickers
             </a>
           </Link>
-          {loggedIn && <Link href={"/addProduct"}>
-            <a className="text-xl text-black hover:text-pink-500 cursor-pointer">
-              Add Product
-            </a>
-          </Link>}
-          <div className="flex items-center space-x-4">
+          {loggedIn && (
+            <Link href={"/addProduct"}>
+              <a className="text-xl text-black hover:text-pink-500 cursor-pointer">
+                Add Product
+              </a>
+            </Link>
+          )}
+          <div className="flex items-center space-x-4 relative">
             {!loggedIn && (
               <Link href={"/login"}>
                 <a className="text-sm text-white px-2 py-1 w-max h-8 rounded-md bg-pink-500 cursor-pointer border  hover:bg-white hover:text-pink-500 hover:border border-pink-500 transition duration-300">
@@ -76,18 +89,57 @@ const Navbar: React.FC<NavbarProps> = ({
 
             {loggedIn && (
               <>
-              <div 
-              onClick={()=>{localStorage.removeItem('token'); router.push('/'); window.location.reload()}}
-              className="text-sm text-white px-2 py-1 w-max h-8 rounded-md bg-pink-500 cursor-pointer border  hover:bg-white hover:text-pink-500 hover:border border-pink-500 transition duration-300">
-                LogOut
-              </div>
-              <AiOutlineShoppingCart
-                onClick={() => {
-                  setShowCart(!showCart);
-                }}
-                className="border hover:bg-gray-100 border-gray-300 text-pink-500 rounded-lg p-1 h-8 w-8 cursor-pointer"
-              />
+                <RiAccountPinCircleFill
+                  className="w-7 h-7 cursor-pointer text-black"
+                  onMouseOver={() => {
+                    setToggle(true);
+                  }}
+                  onMouseLeave={() => {
+                    setToggle(false);
+                  }}
+                />
+                {/* <div
+                  
+                  className="text-sm text-white px-2 py-1 w-max h-8 rounded-md bg-pink-500 cursor-pointer border  hover:bg-white hover:text-pink-500 hover:border border-pink-500 transition duration-300"
+                >
+                  LogOut
+                </div> */}
+                <AiOutlineShoppingCart
+                  onClick={() => {
+                    setShowCart(!showCart);
+                  }}
+                  className="border hover:bg-gray-100 border-gray-300 text-pink-500 rounded-lg p-1 h-8 w-8 cursor-pointer"
+                />
               </>
+            )}
+            {toggle && (
+              <ul
+                onMouseEnter={() => {
+                  setToggle(true);
+                }}
+                onMouseLeave={() => {
+                  setToggle(false);
+                }}
+                className="w-40 rounded-md border border-pink-500 bg-white shadow-xl p-5 absolute top-8 right-12"
+              >
+                <li className="mb-3 hover:text-pink-700 cursor-pointer">
+                  My Account
+                </li>
+                <li
+                  onClick={() => {
+                    router.push("/orders");
+                  }}
+                  className="mb-3 hover:text-pink-700 cursor-pointer"
+                >
+                  Orders
+                </li>
+                <li
+                  className="mb-3 hover:text-pink-700 cursor-pointer"
+                  onClick={logOut}
+                >
+                  Logout
+                </li>
+              </ul>
             )}
           </div>
         </nav>
