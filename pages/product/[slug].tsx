@@ -30,7 +30,7 @@ const Slug = ({ addToCart, buyNow, product, variants }: any) => {
 
   useEffect(() => {
     async function run() {
-      const res = await fetch("http://localhost:3000/api/pincode");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pincode`);
     }
     run();
     changeColor(product.color)
@@ -38,6 +38,7 @@ const Slug = ({ addToCart, buyNow, product, variants }: any) => {
       tempColor.push(color);
     }
     if (tempColor.length > 0) {
+      // @ts-ignore
       setColors(tempColor);
       tempColor = [];
     }
@@ -56,7 +57,7 @@ const Slug = ({ addToCart, buyNow, product, variants }: any) => {
   };
 
   const checkServiceability = async () => {
-    const res = await fetch("http://localhost:3000/api/pincode");
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pincode`);
     const pinData = await res.json();
     // @ts-ignore
     if (pinData.pinCodes.includes(pin)) {
@@ -97,8 +98,8 @@ const Slug = ({ addToCart, buyNow, product, variants }: any) => {
     // }
 
     if (color && size) {
-      console.log("getting variants of color >>>>", `http://localhost:3000/product/${variants[color][size]["slug"]}`);
-      let url = `http://localhost:3000/product/${variants[color][size]["slug"]}`;
+      // console.log("getting variants of color >>>>", `http://localhost:3000/product/${variants[color][size]["slug"]}`);
+      let url = `${process.env.NEXT_PUBLIC_HOST}/product/${variants[color][size]["slug"]}`;
       // @ts-ignore
       window.location = url;
     }

@@ -5,6 +5,9 @@ import Button from "../components/Button";
 import { HiMinusSm, HiPlusSm } from "react-icons/hi";
 import { BsBagCheckFill } from "react-icons/bs";
 import router from "next/router";
+import Head from "next/head";
+import Script from "next/script";
+import axios from "axios";
 
 const Checkout = ({
   cart,
@@ -23,8 +26,65 @@ const Checkout = ({
   const [state, setState] = useState("");
   const [district, setDistrict] = useState("");
 
+  const initiatePayment = async () => {
+    let txnToken;
+    let oId = Math.floor( Math.random() * Date.now());
+    let data = { cart, subTotal, oId, email: "email" };
+
+    axios
+      .post(`${process.env.NEXT_PUBLIC_HOST}/api/preTransaction`, data)
+      .then((response) => {
+        console.log("response", response);
+      })
+      .catch((err) => {
+        console.log("error"), err;
+      });
+
+    var config = {
+      root: "",
+      flow: "DEFAULT",
+      data: {
+        orderId: oId /* update order id */,
+        token: txnToken /* update token value */,
+        tokenType: "TXN_TOKEN",
+        amount: subTotal /* update amount */,
+      },
+      handler: {
+        notifyMerchant: function (eventName: any, data: any) {
+          console.log("notifyMerchant handler function called");
+          console.log("eventName => ", eventName);
+          console.log("data => ", data);
+        },
+      },
+    };
+    // initialze configuration using init method
+    // @ts-ignore
+    // window.Paytm.CheckoutJS.init(config)
+    //   .then(function onSuccess() {
+    //     // after successfully updating configuration, invoke JS Checkout
+    //     // @ts-ignore
+    //     window.Paytm.CheckoutJS.invoke();
+    //   })
+    //   .catch(function onError(error: any) {
+    //     console.log("error => ", error);
+    //   });
+  };
+
   return (
     <div className="container mx-auto">
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0"
+        />
+      </Head>
+      <Script
+        type="application/javascript"
+        src={`${process.env.NEXT_PUBLIC_PAYTM_HOST}/merchantpgpui/checkoutjs/merchants/${process.env.NEXT_PUBLIC_PAYTM_MID}.js`}
+        onLoad={() => {}}
+        crossOrigin="anonymous"
+      />
+
       <h1 className="text-2xl lg:text-3xl font-semibold text-center capitalize my-5">
         checkout
       </h1>
@@ -34,28 +94,30 @@ const Checkout = ({
       <div className="px-5">
         <div className="flex space-x-5 w-full">
           <div className="w-1/2">
-          <Input
-            label="Name"
-            type="text"
-            id="name"
-            placeholder="Enter your name"
-            handleChange={(e) => {
-              // @ts-ignore
-              console.log(e.target.value);
-            }}
-          />
+            <Input
+              label="Name"
+              type="text"
+              id="name"
+              value=""
+              placeholder="Enter your name"
+              handleChange={(e) => {
+                // @ts-ignore
+                console.log(e.target.value);
+              }}
+            />
           </div>
           <div className="w-1/2">
-          <Input
-            label="Email"
-            type="email"
-            id="email"
-            placeholder="Enter your email"
-            handleChange={(e) => {
-              // @ts-ignore
-              console.log(e.target.value);
-            }}
-          />
+            <Input
+              label="Email"
+              type="email"
+              id="email"
+              value=""
+              placeholder="Enter your email"
+              handleChange={(e) => {
+                // @ts-ignore
+                console.log(e.target.value);
+              }}
+            />
           </div>
         </div>
 
@@ -65,6 +127,7 @@ const Checkout = ({
           </label>
           <textarea
             id="address"
+            value=""
             name="address"
             placeholder="Enter your address"
             onChange={(e) => {
@@ -75,55 +138,59 @@ const Checkout = ({
           ></textarea>
         </div>
         <div className="flex space-x-5 w-full">
-        <div className="w-1/2">
-          <Input
-            label="Phone Number"
-            type="text"
-            id="number"
-            placeholder="Enter your 10 Digit Number"
-            handleChange={(e) => {
-              // @ts-ignore
-              console.log(e.target.value);
-            }}
-          />
+          <div className="w-1/2">
+            <Input
+              label="Phone Number"
+              type="text"
+              id="number"
+              value=""
+              placeholder="Enter your 10 Digit Number"
+              handleChange={(e) => {
+                // @ts-ignore
+                console.log(e.target.value);
+              }}
+            />
           </div>
           <div className="w-1/2">
-          <Input
-            label="Pin (Shipping only accross Pakistan)"
-            type="text"
-            id="pin"
-            placeholder=""
-            handleChange={(e) => {
-              // @ts-ignore
-              console.log(e.target.value);
-            }}
-          />
+            <Input
+              label="Pin (Shipping only accross Pakistan)"
+              type="text"
+              id="pin"
+              value=""
+              placeholder=""
+              handleChange={(e) => {
+                // @ts-ignore
+                console.log(e.target.value);
+              }}
+            />
           </div>
         </div>
         <div className="flex space-x-5 w-full">
-        <div className="w-1/2">
-          <Input
-            label="State"
-            type="text"
-            id="state"
-            placeholder=""
-            handleChange={(e) => {
-              // @ts-ignore
-              console.log(e.target.value);
-            }}
-          />
+          <div className="w-1/2">
+            <Input
+              label="State"
+              type="text"
+              id="state"
+              value=""
+              placeholder=""
+              handleChange={(e) => {
+                // @ts-ignore
+                console.log(e.target.value);
+              }}
+            />
           </div>
           <div className="w-1/2">
-          <Input
-            label="District"
-            type="text"
-            id="district"
-            placeholder=""
-            handleChange={(e) => {
-              // @ts-ignore
-              console.log(e.target.value);
-            }}
-          />
+            <Input
+              label="District"
+              type="text"
+              id="district"
+              value=""
+              placeholder=""
+              handleChange={(e) => {
+                // @ts-ignore
+                console.log(e.target.value);
+              }}
+            />
           </div>
         </div>
       </div>
@@ -184,10 +251,10 @@ const Checkout = ({
             handleClick={() => {
               clearCart();
               // path May be replaced later
-              router.push('/tshirts');
+              router.push("/tshirts");
             }}
           />
-          )}
+        )}
       </div>
       <div className="px-3 py-5">
         <Button
@@ -195,7 +262,7 @@ const Checkout = ({
           disable={Object.keys(cart).length == 0}
           variant="contained"
           icon="bag"
-          handleClick={() => {}}
+          handleClick={initiatePayment}
         />
       </div>
     </div>

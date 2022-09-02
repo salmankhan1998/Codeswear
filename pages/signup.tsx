@@ -28,7 +28,7 @@ const Signup = () => {
     let data = {'name': name, 'email': email, 'password': password}
     console.log("user", data);
     axios
-      .post("http://localhost:3000/api/signUp", data)
+      .post(`${process.env.NEXT_PUBLIC_HOST}/api/signUp`, data)
       .then((response) => {
         console.log("response", response);
         if(response.statusText == "OK"){

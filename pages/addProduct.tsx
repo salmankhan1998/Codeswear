@@ -26,7 +26,7 @@ const AddProduct = () => {
     console.log("Product details", product);
     // setLoading(true);
     axios
-      .post("http://localhost:3000/api/add_product", product)
+      .post(`${process.env.NEXT_PUBLIC_HOST}/api/add_product`, product)
       .then(function (response) {
         console.log("response",response);
       })
@@ -48,6 +48,7 @@ const AddProduct = () => {
           label="Poduct Title"
           type="text"
           id="title"
+          value=""
           placeholder="Enter product name"
           handleChange={(e) => {
             handleChange(e, "title");
@@ -57,6 +58,7 @@ const AddProduct = () => {
           label="Slug"
           type="text"
           id="slug"
+          value=""
           placeholder="Enter Unique Identity for product"
           handleChange={(e) => {
             handleChange(e, "slug");
@@ -66,6 +68,7 @@ const AddProduct = () => {
           label="Description"
           type="text"
           id="desc"
+          value=""
           placeholder="Enter Description"
           handleChange={(e) => {
             handleChange(e, "description");
@@ -170,6 +173,7 @@ const AddProduct = () => {
           label="Price"
           type="number"
           id="price"
+          value=""
           placeholder="Enter Price"
           handleChange={(e) => {
             handleChange(e, "price");
@@ -179,6 +183,7 @@ const AddProduct = () => {
           label="Available"
           type="number"
           id="quanity"
+          value=""
           placeholder="Enter product name"
           handleChange={(e) => {
             handleChange(e, "availableQty");
